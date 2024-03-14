@@ -1,0 +1,4 @@
+GET http://localhost:8080/vehicle
+Content-Type: */*
+
+#POST mit Body siehe: https://www.jetbrains.com/help/idea/exploring-http-syntax.html#break-long-requests-into-several-lines
