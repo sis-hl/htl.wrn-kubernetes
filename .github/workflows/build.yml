@@ -12,15 +12,16 @@ jobs:
           distribution: 'temurin'
           java-version: '21'  #17 wär vielleicht besser
           cache: 'maven' #Caching, schon Schulinternet
-      - name: Build with Maven
-        run: |  #durch | können mehrer Befehle angegeben werden
-          mvn -B -DskipTests package
-          ls -lh target
-          cp src/main/docker/Dockerfile ./target
-          docker build --tag ghcr.io/${{ github.repository }}/backend:latest ./target
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build with Maven, Build Docker Image
+        run: |  #durch | können mehrer Befehle angegeben werden
+          mvn -B -DskipTests package
+          ls -lh target
+          cp src/main/docker/Dockerfile ./target
+          docker build --tag ghcr.io/${{ github.repository }}/backend:latest ./target
+          docker push ghcr.io/${{ github.repository }}/backend:latest
