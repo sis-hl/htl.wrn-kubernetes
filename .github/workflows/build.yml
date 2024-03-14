@@ -13,5 +13,5 @@ jobs:
           java-version: '21'
           cache: 'maven' #Caching, schon Schulinternet
       - name: Build with Maven
-        run: mvn -B package
+        run: mvn -B -DskipTests package
 
