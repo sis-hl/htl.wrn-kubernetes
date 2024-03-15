@@ -7,20 +7,42 @@ metadata:
   name: appsrv
 
 spec:
-  replicas: 2 #2 Instanzen gewünscht zwecks Skalierung
+  replicas: 1 #2 Instanzen gewünscht zwecks Skalierung
   selector:
     matchLabels:
-      app: appsrv
+      component: appsrv
   template:
     metadata:
       labels:
-        app: appsrv
+        component: appsrv
     spec:
+#      initContainers:
+#        - name: check-db-ready
+#          image: postgres:14
+#          command: ['sh', '-c',
+#            'until pg-isready -h postgres -p 5432;
+#            do echo waiting for database; sleep2 ; done;']
       containers:
         - name: appsrv
           image: ghcr.io/sis-hl/backend:latest
           # remove this when stable. Currently we do not take care of version numbers
           imagePullPolicy: Always #Image immer neu ziehen
           ports:
-            - containerPort: 8080
+            - containerPort: 80
 #          command: ["tail", "-f", "/dev/null"]
+#3 Striche sind so wie ein neues File
+#kleine Files sind praktisch, wenn man nur wenige configs updaten möchte
+#will man alles auf einmal updaten, kann man mit --- zusammenfassen
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: appsrv
+
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+      protocol: TCP
+  selector:
+    component: appsrv
